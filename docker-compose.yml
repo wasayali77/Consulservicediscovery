@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  consul:
+    image: consul:1.15
+    container_name: consul-server
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    volumes:
+      - ./consul/config.json:/consul/config/config.json
+    command: ["consul", "agent", "-server", "-bootstrap-expect=1", "-ui", "-bind=0.0.0.0", "-client=0.0.0.0", "-config-file=/consul/config/config.json"]
+    networks:
+      - consul-network
+
+  app1:
+    build: ./app1
+    container_name: nextjs-app1
+    ports:
+      - "3001:3000"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=app1
+      - SERVICE_PORT=3000
+      - SERVICE_ID=app1-instance
+    depends_on:
+      - consul
+    networks:
+      - consul-network
+
+  app2:
+    build: ./app2
+    container_name: nextjs-app2
+    ports:
+      - "3002:3000"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=app2
+      - SERVICE_PORT=3000
+      - SERVICE_ID=app2-instance
+    depends_on:
+      - consul
+    networks:
+      - consul-network
+
+  app3:
+    build: ./app3
+    container_name: nextjs-app3
+    ports:
+      - "3003:3000"
+    environment:
+      - CONSUL_HOST=consul
+      - CONSUL_PORT=8500
+      - SERVICE_NAME=app3
+      - SERVICE_PORT=3000
+      - SERVICE_ID=app3-instance
+    depends_on:
+      - consul
+    networks:
+      - consul-network
+
+networks:
+  consul-network:
+    driver: bridge
