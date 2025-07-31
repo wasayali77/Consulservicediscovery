@@ -13,6 +13,21 @@ services:
     networks:
       - consul-network
 
+#  api-gateway:
+ #   build: ./api-gateway
+  #  container_name: api-gateway
+   # ports:
+    #  - "8080:8080"  # Single entry point for all services
+   # environment:
+    #  - CONSUL_HOST=consul
+     # - CONSUL_PORT=8500
+   #   - PORT=8080
+ #   depends_on:
+  #    - consul
+  #  networks:
+   #   - consul-network
+
+
   app1:
     build: ./app1
     container_name: nextjs-app1
